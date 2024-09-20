@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <img src="assets/musgif.gif" alt="" id="cursor">
+    <!--<fieldset>-->
+    <!--    egend>Debug:</legend></-->
+    <!--     id="angle">Vinkel: N/A</p></-->
+    <!--</fieldset>-->
+
+    <h1>Episk hemisda med spindelmus</h1>
+    <p>Kolla vilken imponerande sida jag har tillverkat</p>
+
+    <script>
+        const cursor = document.getElementById("cursor");
+        //const angleD = document.getElementById("angle");
+        let angle = 0;
+        let lastX = new Array(3).fill(0);
+        let lastY = new Array(3).fill(0);
+        function avg(list) {
+            let sum = 0;
+            for (let i  = 0; i <list.length;i++) {
+                sum+= list[i];
+            }
+            return sum/list.length;
+        }
+        document.addEventListener("mousemove",(e) => {
+            cursor.style.left = e.clientX-25+"px";
+            cursor.style.top = e.clientY-25+"px";
+            let diffX = e.clientX-avg(lastX);
+            let diffY = e.clientY-avg(lastY);
+            angle = Math.atan2(diffY,diffX)==0?angle:(Math.atan2(diffY,diffX)*180/Math.PI+180)%360;
+            //angleD.innerHTML = "Vinkel: "+angle;
+            cursor.style.rotate = angle+"deg";
+            lastX.push(e.clientX);
+            lastX.shift(1);
+            lastY.push(e.clientY);
+            lastY.shift(1);
+        });
+        cursor.addEventListener("mousedown",() => {
+            cursor.style.zIndex = -1;
+            cursor.style.visibility = "hidden";
+            document.elementFromPoint(lastX[lastX.length-1],lastY[lastY.length-1]).click();
+            setTimeout(()=> {
+                cursor.style.zIndex = 1;
+                cursor.style.visibility = "visible";
+            },10);
+        });
+    </script>
+</body>
+</html>
